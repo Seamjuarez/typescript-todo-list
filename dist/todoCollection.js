@@ -1,0 +1,41 @@
+class TodoCollection {
+    constructor(userName, todoItems = []) {
+        this.userName = userName;
+        this.nextId = 1;
+        this.itemMap = new Map();
+        todoItems.forEach(item => this.itemMap.set(item.id, item));
+    }
+    addTodo(task) {
+        while (this.getTodoById(this.nextId)) {
+            this.nextId++;
+        }
+        this.itemMap.set(this.nextId, new TodoItem(this.nextId, task));
+        return this.nextId;
+    }
+    getTodoById(id) {
+        return this.itemMap.get(id);
+    }
+    getTodoItems(includeComplete) {
+        return [...this.itemMap.values()].filter(item => includeComplete || !item.complete);
+    }
+    markComplete(id, complete) {
+        const todoItem = this.getTodoById(id);
+        if (todoItem) {
+            todoItem.complete = complete;
+        }
+    }
+    removeComplete() {
+        this.itemMap.forEach(item => {
+            if (item.complete) {
+                this.itemMap.delete(item.id);
+            }
+        });
+    }
+    getTotalTasks() {
+        return this.itemMap.size;
+    }
+    getCompletedTasks() {
+        return [...this.itemMap.values()].filter(item => item.complete).length;
+    }
+}
+//# sourceMappingURL=todoCollection.js.map
